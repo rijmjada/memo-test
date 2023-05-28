@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>Memotec</title>
+
+    <style>
+        body {
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, rgba(220, 20, 60, 0.504), rgba(0, 0, 255, 0.569));
+
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+        }
+
+        .container {
+            color: white;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        #game-board {
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(4, 1fr);
+            grid-gap: 5px;
+            justify-items: center;
+            border-radius: 36px;
+        }
+
+        .card {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(45deg, rgba(0, 0, 0, 0.463), rgba(128, 128, 128, 0.516));
+            border-radius: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            background-size: cover;
+        }
+
+        .card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 2rem;
+        }
+
+        .matched {
+            background-color: lime;
+            cursor: default;
+        }
+    </style>
+
+    <script src="https://kit.fontawesome.com/61b5bba431.js" defer crossorigin="anonymous"></script>
+
+</head>
+
+<body>
+
+
+    <h1>Para Julietita <span style="color:red; font-size:45px;">♥♥♥</span> </h1>
+
+    <div class="container">
+        <div id="game-board">
+
+        </div>
+    </div>
+
+    <script>
+        const cards = [
+            "lyna-1.jpg", "lyna-2.jpg", "lyna-1.jpg", "lyna-2.jpg",
+            "lyna-3.jpg", "lyna-3.jpg", "lyna-4.jpg", "lyna-4.jpg",
+            "lyna-5.jpg", "lyna-5.jpg", "lyna-6.jpg", "lyna-6.jpg",
+            "lyna-7.jpg", "lyna-7.jpg", "lyna-8.jpg", "lyna-8.jpg",
+        ];
+
+        let firstCard = null;
+        let secondCard = null;
+        let canFlip = true;
+
+        function createCard(card) {
+            const div = document.createElement("div");
+            div.classList.add("card");
+            div.dataset.card = card;
+            const img = document.createElement("img");
+            img.src = 'img/signo.jpg';
+            div.appendChild(img);
+            div.addEventListener("click", flipCard);
+            return div;
+        }
+
+        function flipCard() {
+            if (!canFlip) return;
+
+            if (!firstCard) {
+                firstCard = this;
+                const img = firstCard.querySelector("img");
+                img.src = "img/" + this.dataset.card;
+            } else if (this !== firstCard) {
+                secondCard = this;
+                const img = secondCard.querySelector("img");
+                img.src = "img/" + this.dataset.card;
+                canFlip = false;
+                setTimeout(checkForMatch, 1000);
+            }
+        }
+
+        function checkForMatch() {
+            if (firstCard.dataset.card === secondCard.dataset.card) {
+                firstCard.classList.add("matched");
+                secondCard.classList.add("matched");
+            } else {
+                const firstIcon = firstCard.querySelector("img");
+                const secondIcon = secondCard.querySelector("img");
+                firstIcon.classList.remove(firstCard.dataset.card);
+                secondIcon.classList.remove(secondCard.dataset.card);
+                firstIcon.src = 'img/signo.jpg';
+                secondIcon.src = 'img/signo.jpg';
+            }
+            firstCard = null;
+            secondCard = null;
+            canFlip = true;
+        }
+
+        function shuffle(array) {
+            let currentIndex = array.length;
+            let temporaryValue, randomIndex;
+
+            while (currentIndex !== 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex -= 1;
+
+                temporaryValue = array[currentIndex];
+                array[currentIndex] = array[randomIndex];
+                array[randomIndex] = temporaryValue;
+            }
+
+            return array;
+        }
+
+        function initializeGame() {
+            const shuffledCards = shuffle(cards);
+            const gameBoard = document.getElementById("game-board");
+            shuffledCards.forEach(card => {
+                const newCard = createCard(card);
+                gameBoard.appendChild(newCard);
+            });
+        }
+
+        initializeGame();
+
+    </script>
+
+    <!-- <script>
+
+        const gameBoard = document.getElementById("game-board");
+
+        const div = document.createElement("div");
+        div.classList.add("card");
+        div.style.backgroundImage = "url(lyna-1.jpg)";
+        gameBoard.appendChild(div)
+
+    </script> -->
+</body>
+
+</html>
